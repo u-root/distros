@@ -8,8 +8,8 @@ import (
 	"time"
 
 	ui "github.com/gizak/termui/v3"
-	"github.com/u-root/webboot/pkg/menu"
-	"github.com/u-root/webboot/pkg/wifi"
+	"github.com/u-root/distros/menu"
+	"github.com/u-root/distros/wifi"
 	"github.com/vishvananda/netlink"
 )
 

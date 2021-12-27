@@ -10,7 +10,7 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/u-root/NiChrome/pkg/wifi"
+	"github.com/u-root/distros/wifi"
 )
 
 func setupStubService() (*WifiService, error) {

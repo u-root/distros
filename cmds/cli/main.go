@@ -15,8 +15,8 @@ import (
 	"path/filepath"
 
 	"github.com/u-root/u-root/pkg/boot"
-	"github.com/u-root/webboot/pkg/bootiso"
-	"github.com/u-root/webboot/pkg/menu"
+	"github.com/u-root/distros/bootiso"
+	"github.com/u-root/distros/menu"
 )
 
 var (

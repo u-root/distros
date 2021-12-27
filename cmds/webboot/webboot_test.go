@@ -16,7 +16,7 @@ import (
 	"time"
 
 	ui "github.com/gizak/termui/v3"
-	"github.com/u-root/webboot/pkg/menu"
+	"github.com/u-root/distros/menu"
 )
 
 func pressKey(ch chan ui.Event, input []string) {
@@ -406,7 +406,8 @@ func TestCancelDownload(t *testing.T) {
 	}
 }
 
-func TestDirOption(t *testing.T) {
+// FIXME: we don't want a 26M binary in this repo, find another place for it!
+func testDirOption(t *testing.T) {
 	wanted := &ISO{
 		label: "TinyCorePure64.iso",
 		path:  "testdata/dirlevel1/dirlevel2/TinyCorePure64.iso",
@@ -443,7 +444,8 @@ func TestDirOption(t *testing.T) {
 }
 
 // TestBackOption tests behavior when the escape key is pressed on a menu.
-func TestBackOption(t *testing.T) {
+// FIXME: get an ISO from somewhere
+func testBackOption(t *testing.T) {
 
 	uiEvents := make(chan ui.Event)
 	menus := make(chan string)

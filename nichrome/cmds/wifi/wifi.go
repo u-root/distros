@@ -13,7 +13,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/u-root/NiChrome/pkg/wifi"
+	"github.com/u-root/distros/wifi"
 )
 
 const (

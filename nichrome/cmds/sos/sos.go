@@ -9,7 +9,7 @@ import (
 	"log"
 	"os/exec"
 
-	"github.com/u-root/NiChrome/pkg/sos"
+	"github.com/u-root/distros/sos"
 )
 
 var htmlRoot = flag.String("html", "/etc/sos/html", "Path for root of SOS html files")
