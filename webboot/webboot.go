@@ -3,10 +3,8 @@
 // license that can be found in the LICENSE file.
 package main
 
-// This program depends on the present of the u-root and NiChrome projects.
-// First time use requires that you run
-// go get -u github.com/u-root/u-root
-// go get -u github.com/u-root/NiChrome/...
+// This program depends on the present of u-root SOURCE.
+// go get it or git clone it, but you need to know the path to it.
 import (
 	"bufio"
 	"flag"
@@ -33,11 +31,13 @@ var (
 	verbose    = flag.Bool("v", true, "verbose debugging output")
 	uroot      = flag.String("u", "", "options for u-root")
 	cmds       = flag.String("c", "all", "u-root commands to build into the image")
-	ncmds      = flag.String("n", "github.com/u-root/NiChrome/cmds/wifi", "NiChrome commands to build into the image")
 	bzImage    = flag.String("bzImage", "", "Optional bzImage to embed in the initramfs")
 	iso        = flag.String("iso", "", "Optional iso (e.g. tinycore.iso) to embed in the initramfs")
 	wifi       = flag.Bool("wifi", true, "include wifi tools")
 	wpaVersion = flag.String("wpa-version", "system", "if set, download and build the wpa_supplicant (ex: 2.9)")
+
+	// The new modules world
+	urootPath = flag.String("urootpath", "../u-root", "urootpath relative to distros")
 )
 
 func init() {
@@ -204,11 +204,16 @@ func filterFile(origin, destination string, filterOut *regexp.Regexp) error {
 }
 
 func main() {
-	currentDir, err := os.Getwd()
+	cwd, err := os.Getwd()
 	if err != nil {
 		log.Fatalf("error getting current directory %v", err)
 	}
 
+	distroDir, err := filepath.Abs(filepath.Join(cwd, ".."))
+	if err != nil {
+		log.Fatalf("Can't get abs path for distroDir: %v", err)
+	}
+	urootDir := filepath.Join(distroDir, *urootPath)
 	// Use the system wpa_supplicant or download them.
 	if *wpaVersion != "system" {
 		wpaSupplicantPath, err := buildWPASupplicant(*wpaVersion)
@@ -222,7 +227,7 @@ func main() {
 	}
 
 	var args = []string{
-		"go", "run", "github.com/u-root/u-root/.",
+		"u-root",
 		"-files", "/etc/ssl/certs",
 	}
 
@@ -239,9 +244,8 @@ func main() {
 			"-files", extraBinMust("wpa_supplicant")+":/bin/wpa_supplicant",
 			"-files", extraBinMust("wpa_cli")+":/bin/wpa_cli",
 			"-files", extraBinMust("wpa_passphrase")+":/bin/wpa_passphrase",
-			"-files", filepath.Join(currentDir, "cmds", "webboot", "webboot")+":bbin/webboot",
 			"-files", extraBinMust("strace"),
-			"-files", "cmds/webboot/distros.json:distros.json",
+			"-files", filepath.Join(distroDir, "cmds/webboot/distros.json")+":distros.json",
 		)
 	}
 	if *bzImage != "" {
@@ -250,9 +254,9 @@ func main() {
 	if *iso != "" {
 		args = append(args, "-files", *iso+":iso")
 	}
+	args = append(args, filepath.Join(distroDir, "cmds", "*"))
 	var commands = []cmd{
-		{args: []string{"go", "build"}, dir: filepath.Join(currentDir, "cmds", "webboot")},
-		{args: append(append(args, strings.Fields(*uroot)...), *cmds, *ncmds)},
+		{args: append(append(strings.Fields(*uroot), args...), *cmds), dir: urootDir},
 	}
 
 	for _, cmd := range commands {
