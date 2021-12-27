@@ -30,7 +30,7 @@ var (
 
 	verbose    = flag.Bool("v", true, "verbose debugging output")
 	uroot      = flag.String("u", "", "options for u-root")
-	cmds       = flag.String("c", "all", "u-root commands to build into the image")
+	cmds       = flag.String("c", "cmds/core/*", "u-root commands to build into the image")
 	bzImage    = flag.String("bzImage", "", "Optional bzImage to embed in the initramfs")
 	iso        = flag.String("iso", "", "Optional iso (e.g. tinycore.iso) to embed in the initramfs")
 	wifi       = flag.Bool("wifi", true, "include wifi tools")
@@ -213,7 +213,10 @@ func main() {
 	if err != nil {
 		log.Fatalf("Can't get abs path for distroDir: %v", err)
 	}
-	urootDir := filepath.Join(distroDir, *urootPath)
+	urootDir := *urootPath
+	if !filepath.IsAbs(urootDir) {
+		urootDir = filepath.Join(distroDir, urootDir)
+	}
 	// Use the system wpa_supplicant or download them.
 	if *wpaVersion != "system" {
 		wpaSupplicantPath, err := buildWPASupplicant(*wpaVersion)

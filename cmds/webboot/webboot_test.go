@@ -406,8 +406,7 @@ func TestCancelDownload(t *testing.T) {
 	}
 }
 
-// FIXME: we don't want a 26M binary in this repo, find another place for it!
-func testDirOption(t *testing.T) {
+func TestDirOption(t *testing.T) {
 	wanted := &ISO{
 		label: "TinyCorePure64.iso",
 		path:  "testdata/dirlevel1/dirlevel2/TinyCorePure64.iso",
@@ -429,6 +428,9 @@ func testDirOption(t *testing.T) {
 				pressKey(uiEvents, []string{"0", "<Enter>"})
 			}()
 			entry, err = dirOption.exec(uiEvents, menus)
+			if entry == nil {
+				t.Fatalf("dirOption.exec returned nil entry, expected non-nil, err %v", err)
+			}
 			if err != nil {
 				t.Fatalf("Fail to execute option (%q)'s exec(): %+v", entry.Label(), err)
 			}
@@ -444,8 +446,7 @@ func testDirOption(t *testing.T) {
 }
 
 // TestBackOption tests behavior when the escape key is pressed on a menu.
-// FIXME: get an ISO from somewhere
-func testBackOption(t *testing.T) {
+func TestBackOption(t *testing.T) {
 
 	uiEvents := make(chan ui.Event)
 	menus := make(chan string)
@@ -468,6 +469,9 @@ func testBackOption(t *testing.T) {
 		if dirOption, ok := entry.(*DirOption); ok {
 			currentPath := dirOption.path
 			entry, err = dirOption.exec(uiEvents, menus)
+			if entry == nil {
+				t.Fatalf("diroption.exec returned nil entry, expect non-nil, err %v", err)
+			}
 			if err != nil && err != menu.BackRequest {
 				t.Fatalf("Fail to execute option (%q)'s exec(): %+v", entry.Label(), err)
 			} else if err == menu.BackRequest {
