@@ -213,7 +213,10 @@ func main() {
 	if err != nil {
 		log.Fatalf("Can't get abs path for distroDir: %v", err)
 	}
-	urootDir := filepath.Join(distroDir, *urootPath)
+	urootDir := *urootPath
+	if !filepath.IsAbs(urootDir) {
+		urootDir = filepath.Join(distroDir, urootDir)
+	}
 	// Use the system wpa_supplicant or download them.
 	if *wpaVersion != "system" {
 		wpaSupplicantPath, err := buildWPASupplicant(*wpaVersion)
@@ -258,7 +261,7 @@ func main() {
 	if *iso != "" {
 		args = append(args, "-files", *iso+":iso")
 	}
-	args = append(args, filepath.Join(distroDir, "cmds", "*"))
+	args = append(args, "core")
 	var commands = []cmd{
 		{args: append(append(strings.Fields(*uroot), args...), *cmds), dir: urootDir},
 	}
