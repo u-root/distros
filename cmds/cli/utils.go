@@ -9,7 +9,7 @@ import (
 	"os"
 	"sort"
 
-	"github.com/u-root/webboot/menu"
+	"github.com/u-root/distros/menu"
 )
 
 // WriteCounter counts the number of bytes written to it. It implements an io.Writer

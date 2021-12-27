@@ -18,8 +18,8 @@ import (
 	Boot "github.com/u-root/u-root/pkg/boot"
 	"github.com/u-root/u-root/pkg/mount"
 	"github.com/u-root/u-root/pkg/mount/block"
-	"github.com/u-root/webboot/bootiso"
-	"github.com/u-root/webboot/menu"
+	"github.com/u-root/distros/bootiso"
+	"github.com/u-root/distros/menu"
 )
 
 var (

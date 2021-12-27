@@ -7,7 +7,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/u-root/NiChrome/pkg/wifi"
+	"github.com/u-root/distros/wifi"
 )
 
 // Exported Constants

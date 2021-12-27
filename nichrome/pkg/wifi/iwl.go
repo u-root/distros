@@ -14,7 +14,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/u-root/NiChrome/pkg/wpa/passphrase"
+	"github.com/u-root/distros/wpa/passphrase"
 )
 
 const (
