@@ -1,0 +1,16 @@
+required = [
+  "github.com/golang/dep/cmd/dep"
+]
+
+[[constraint]]
+  version = "6.0.0"
+  name = "github.com/u-root/u-root"
+
+[prune]
+  non-go = true
+  go-tests = true
+  unused-packages = true
+
+  [[prune.project]]
+  name = "github.com/golang/dep"
+  unused-packages = false

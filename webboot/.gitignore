@@ -1,0 +1,26 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, build with `go test -c`
+*.test
+
+# Busybox directories.
+.bb/
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+*~
+
+# ignore kernels we build here, and firmware we download.
+linux
+linux-firmware
+
+# Ignore wpa_supplicant builds.
+wpa_supplicant-*.tar.gz
+wpa_supplicant-*.tar.gz.asc
+wpa_supplicant-*/
