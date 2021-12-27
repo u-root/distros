@@ -220,8 +220,12 @@ func main() {
 		if err != nil {
 			log.Fatalf("Error building wpa_supplicant: %v", err)
 		}
+		abs, err := filepath.Abs(wpaSupplicantPath)
+		if err != nil {
+			log.Fatalf("Can't get absolute path for %q", wpaSupplicantPath)
+		}
 		// Add to front of PATH to be picked up later.
-		if err := os.Setenv("PATH", fmt.Sprintf("%s:%s", wpaSupplicantPath, os.Getenv("PATH"))); err != nil {
+		if err := os.Setenv("PATH", fmt.Sprintf("%s:%s", abs, os.Getenv("PATH"))); err != nil {
 			log.Fatalf("Error setting PATH env variable: %v", err)
 		}
 	}
@@ -241,9 +245,9 @@ func main() {
 		args = append(args,
 			"-files", extraBinMust("iwconfig"),
 			"-files", extraBinMust("iwlist"),
-			"-files", extraBinMust("wpa_supplicant")+":/bin/wpa_supplicant",
-			"-files", extraBinMust("wpa_cli")+":/bin/wpa_cli",
-			"-files", extraBinMust("wpa_passphrase")+":/bin/wpa_passphrase",
+			"-files", extraBinMust("wpa_supplicant")+":bin/wpa_supplicant",
+			"-files", extraBinMust("wpa_cli")+":bin/wpa_cli",
+			"-files", extraBinMust("wpa_passphrase")+":bin/wpa_passphrase",
 			"-files", extraBinMust("strace"),
 			"-files", filepath.Join(distroDir, "cmds/webboot/distros.json")+":distros.json",
 		)
