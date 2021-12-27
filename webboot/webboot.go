@@ -30,7 +30,7 @@ var (
 
 	verbose    = flag.Bool("v", true, "verbose debugging output")
 	uroot      = flag.String("u", "", "options for u-root")
-	cmds       = flag.String("c", "all", "u-root commands to build into the image")
+	cmds       = flag.String("c", "cmds/core/*", "u-root commands to build into the image")
 	bzImage    = flag.String("bzImage", "", "Optional bzImage to embed in the initramfs")
 	iso        = flag.String("iso", "", "Optional iso (e.g. tinycore.iso) to embed in the initramfs")
 	wifi       = flag.Bool("wifi", true, "include wifi tools")
@@ -213,15 +213,22 @@ func main() {
 	if err != nil {
 		log.Fatalf("Can't get abs path for distroDir: %v", err)
 	}
-	urootDir := filepath.Join(distroDir, *urootPath)
+	urootDir := *urootPath
+	if !filepath.IsAbs(urootDir) {
+		urootDir = filepath.Join(distroDir, urootDir)
+	}
 	// Use the system wpa_supplicant or download them.
 	if *wpaVersion != "system" {
 		wpaSupplicantPath, err := buildWPASupplicant(*wpaVersion)
 		if err != nil {
 			log.Fatalf("Error building wpa_supplicant: %v", err)
 		}
+		abs, err := filepath.Abs(wpaSupplicantPath)
+		if err != nil {
+			log.Fatalf("Can't get absolute path for %q", wpaSupplicantPath)
+		}
 		// Add to front of PATH to be picked up later.
-		if err := os.Setenv("PATH", fmt.Sprintf("%s:%s", wpaSupplicantPath, os.Getenv("PATH"))); err != nil {
+		if err := os.Setenv("PATH", fmt.Sprintf("%s:%s", abs, os.Getenv("PATH"))); err != nil {
 			log.Fatalf("Error setting PATH env variable: %v", err)
 		}
 	}
@@ -241,9 +248,9 @@ func main() {
 		args = append(args,
 			"-files", extraBinMust("iwconfig"),
 			"-files", extraBinMust("iwlist"),
-			"-files", extraBinMust("wpa_supplicant")+":/bin/wpa_supplicant",
-			"-files", extraBinMust("wpa_cli")+":/bin/wpa_cli",
-			"-files", extraBinMust("wpa_passphrase")+":/bin/wpa_passphrase",
+			"-files", extraBinMust("wpa_supplicant")+":bin/wpa_supplicant",
+			"-files", extraBinMust("wpa_cli")+":bin/wpa_cli",
+			"-files", extraBinMust("wpa_passphrase")+":bin/wpa_passphrase",
 			"-files", extraBinMust("strace"),
 			"-files", filepath.Join(distroDir, "cmds/webboot/distros.json")+":distros.json",
 		)
