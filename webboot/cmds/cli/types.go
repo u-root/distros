@@ -3,8 +3,8 @@ package main
 import (
 	"github.com/u-root/u-root/pkg/boot"
 	"github.com/u-root/u-root/pkg/mount/block"
-	"github.com/u-root/webboot/pkg/bootiso"
-	"github.com/u-root/webboot/pkg/menu"
+	"github.com/u-root/webboot/bootiso"
+	"github.com/u-root/webboot/menu"
 )
 
 type Distro struct {

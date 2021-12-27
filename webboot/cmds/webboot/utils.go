@@ -11,7 +11,7 @@ import (
 	"sort"
 
 	ui "github.com/gizak/termui/v3"
-	"github.com/u-root/webboot/pkg/menu"
+	"github.com/u-root/webboot/menu"
 )
 
 // WriteCounter counts the number of bytes written to it. It implements an io.Writer

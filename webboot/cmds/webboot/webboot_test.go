@@ -16,7 +16,7 @@ import (
 	"time"
 
 	ui "github.com/gizak/termui/v3"
-	"github.com/u-root/webboot/pkg/menu"
+	"github.com/u-root/webboot/menu"
 )
 
 func pressKey(ch chan ui.Event, input []string) {
