@@ -1,0 +1,27 @@
+sudo: true
+language: go
+go:
+  - 1.12.x
+env:
+  - "PATH=/home/travis/gopath/bin:$PATH"
+addons:
+  apt:
+    packages:
+    - gcc-4.8
+    - bc
+    - uuid-dev
+before_install:
+  - pwd
+  - ls -l
+install:
+  - ls
+  - curl -L -o /home/travis/gopath/bin/dep https://github.com/golang/dep/releases/download/v0.5.0/dep-linux-amd64
+  - chmod +x /home/travis/gopath/bin/dep
+script:
+  - cat travis.sh
+  - bash travis.sh
+after_success:
+  - if [ "$TRAVIS_BRANCH" == "master" ]; then ghr --username u-root --token $GITHUB_TOKEN --replace --prerelease --debug `git describe --always`  dist/; fi
+
+notifications:
+  slack: u-root:S74GnNB8ekAiqNYTjwbEhkQE
