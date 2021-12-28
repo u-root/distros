@@ -47,4 +47,5 @@ jobs:
       - name: Build and test webboot
         run: |
           ./ci.sh
+          (cd nichrome && ./ci.sh)
           (cd webboot && ./ci.sh)
