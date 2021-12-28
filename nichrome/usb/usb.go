@@ -2,6 +2,9 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+//go:build go1.17
+// +build go1.17
+
 package main
 
 //include a loading bar
@@ -189,13 +192,14 @@ func goGet() error {
 
 func goBuildStatic() error {
 	oFile := filepath.Join(workingDir, "linux-stable", initramfs)
-	n, err := filepath.Glob("../u-root/cmds/[ce]*/*")
-	if err != nil {
-		return fmt.Errorf("../u-root/cmds/[ce]/*: %v", err)
+	args := append([]string{"-o", oFile}, "cmds/c*/*", "cmds/e*/*")
+	for i := range staticCmdList {
+		staticCmdList[i] = filepath.Join(workingDir, staticCmdList[i])
 	}
-	args := append([]string{"-o", oFile}, n...)
 	cmd := exec.Command("u-root", append(args, staticCmdList...)...)
 	cmd.Stdin, cmd.Stdout, cmd.Stderr = os.Stdin, os.Stdout, os.Stderr
+	cmd.Dir="../../u-root"
+	log.Printf("Building static u-root: %q", cmd)
 	if err := cmd.Run(); err != nil {
 		return err
 	}
@@ -430,8 +434,10 @@ func run(name string, args ...string) error {
 	return nil
 }
 
+// we are so done with tinycore
 func tcz() error {
-	return run("tcz", append([]string{"-d", "-i=false", "-r=rootfs/tcz"}, tczList...)...)
+	return nil
+	return run("tcz", append([]string{"-d", "-i=false", "-r=tcz"}, tczList...)...)
 }
 
 func check() error {
