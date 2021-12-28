@@ -183,13 +183,6 @@ func cleanup() error {
 	return nil
 }
 
-func goGet() error {
-	return nil
-	cmd := exec.Command("go", append([]string{"get", "github.com/u-root/u-root"}, dynamicCmdList...)...)
-	cmd.Stdin, cmd.Stdout, cmd.Stderr = os.Stdin, os.Stdout, os.Stderr
-	return cmd.Run()
-}
-
 func goBuildStatic() error {
 	oFile := filepath.Join(workingDir, "linux-stable", initramfs)
 	args := append([]string{"-o", oFile}, "cmds/c*/*", "cmds/e*/*")
@@ -210,7 +203,7 @@ func goBuildStatic() error {
 // A new change: we no longer need to add u-root to this partition,
 // as we build it all for the "static" case.
 func goBuildDynamic() error {
-	args := []string{"-o", filepath.Join(workingDir, initramfs), "-nocmd", "-files", "rootfs:", "-files", "/usr/bin/bash", "-base", "/dev/null"}
+	args := []string{"-o", filepath.Join(workingDir, initramfs), "-nocmd", "-files", "rootfs:", "-base", "/dev/null"}
 	log.Print("WARNING: skipping pkg/sos/html; fix me")
 	if false {
 		args = append(args, "-files", "pkg/sos/html:etc/sos/html")
@@ -229,6 +222,8 @@ func getSUIDbinaries() error {
 	if err := os.MkdirAll("usr/bin", 0755); err != nil {
 		return err
 	}
+	// Just cut this off, it's unlikely we'll need it but we'll see
+	return nil
 	binaries := []string{"/bin/fusermount"}
 	for _, b := range binaries {
 		cmd := exec.Command("sudo", "rsync", "-av", b, "rootfs/usr/bin/")
@@ -434,10 +429,8 @@ func run(name string, args ...string) error {
 	return nil
 }
 
-// we are so done with tinycore
 func tcz() error {
-	return nil
-	return run("tcz", append([]string{"-d", "-i=false", "-r=tcz"}, tczList...)...)
+	return run("tcz", append([]string{"-d", "-i=false", "-r=rootfs/tcz"}, tczList...)...)
 }
 
 func check() error {
@@ -456,7 +449,6 @@ func allFunc() error {
 		{f: check, skip: false, ignore: false, n: "check environment"},
 		{f: setup, skip: false, ignore: false, n: "setup"},
 		{f: cleanup, skip: *skipkern || *skiproot || !*fetch, ignore: false, n: "cleanup"},
-		{f: goGet, skip: *skipkern || !*fetch, ignore: false, n: "Get u-root source"},
 		{f: tcz, skip: *skiproot || !*fetch, ignore: false, n: "run tcz to create the directory of packages"},
 		{f: getSUIDbinaries, skip: *skiproot, ignore: false, n: "Get SUID binaries"},
 		{f: chrome, skip: true || *skiproot || !*fetch, ignore: false, n: "to hell with chrome -- let's get firefox"},
